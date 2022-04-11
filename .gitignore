@@ -1,4 +1,8 @@
 env
 .idea
+__pycache__
 data
 literature
+input
+output
+data_processing/log.txt
