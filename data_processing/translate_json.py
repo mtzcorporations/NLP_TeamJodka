@@ -53,7 +53,7 @@ def json_to_html(input_english_json, input_translated_html, output_path):
                 json_output["data"][indexes["data"]]["paragraphs"][indexes["paragraphs"]]["context"] = line
         f.close()
 
-    log = open("log.txt", "w", encoding="utf8")
+    log = open("translation.log", "w", encoding="utf8")
     total = 0
     found = 0
     for d_i, document in enumerate(json_output["data"]):
