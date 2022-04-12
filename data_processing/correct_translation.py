@@ -41,7 +41,7 @@ def correct_translation(input_translated, input_english, output_path, document_l
     with tqdm(total=total) as pbar:
         for d_i, document in enumerate(dataset["data"]):
             for p_i, paragraph in enumerate(document["paragraphs"]):
-                doc_lemma_array = create_lemma_array(paragraph["context"], nlp)
+                doc_lemma_array = None
                 for q_i, qas in enumerate(paragraph["qas"]):
                     for a_i, answer in enumerate(qas["answers"]):
                         checked += 1
@@ -50,6 +50,9 @@ def correct_translation(input_translated, input_english, output_path, document_l
                             pbar.update(1)
                             pbar.set_description(f'Found: {((correct + corrected) / checked) * 100:.2f}%')
                             continue
+                        if doc_lemma_array is None:
+                            doc_lemma_array = create_lemma_array(paragraph["context"], nlp)
+
                         answer_lemma_array = create_lemma_array(answer["text"], nlp)
                         found = True
                         for i in range(len(doc_lemma_array) - len(answer_lemma_array) + 1):
@@ -78,7 +81,7 @@ def correct_translation(input_translated, input_english, output_path, document_l
     log.close()
 
     print(f"Found fraction: {((correct + corrected) / total):.2f}")
-    print(f"Corrected fraction: {(corrected / total):.2f}")
+    print(f"Corrected fraction: {(corrected / total):.2f} | {corrected}")
     output_file_name = Path(input_translated).stem
     with open(os.path.join(output_path, output_file_name + "_corrected.json"), "w", encoding="utf8") as f:
         f.write(json.dumps(dataset, ensure_ascii=False))
