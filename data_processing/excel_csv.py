@@ -97,7 +97,7 @@ def create_random_data(data_path_eng, data_path_slo, output_path, n_samples):
 
     csv_to_excel("out.csv", "excel_za_meto.xlsx")
 
-create_random_data("../data/train-v2.0.json", "./output/train-v2.0_translated.json", "out.csv", 3)
+create_random_data("../data/train-v2.0.json", "./output/train-v2.0_translated.json", "out.csv", 5)
 
 
 #excel_to_csv("Test.xlsx", "Test.csv")

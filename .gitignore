@@ -159,5 +159,5 @@ literature
 input
 output
 
-./data_processing/excel_za_meto.xlsx
-./data_processing/out.csv
+/data_processing/out.csv
+/data_processing/excel_za_meto.xlsx
