@@ -52,7 +52,7 @@ def correct_translation(input_translated, input_english, output_path, document_l
                             continue
                         answer_lemma_array = create_lemma_array(answer["text"], nlp)
                         found = True
-                        for i in range(len(doc_lemma_array)):
+                        for i in range(len(doc_lemma_array) - len(answer_lemma_array) + 1):
                             found = True
                             for j in range(len(answer_lemma_array)):
                                 if answer_lemma_array[j].lemma != doc_lemma_array[i + j].lemma:
@@ -69,8 +69,10 @@ def correct_translation(input_translated, input_english, output_path, document_l
                                 answer["corrected"] = True
                                 break
                         if not found:
-                            log.write(dataset_english["data"][d_i]["paragraphs"][p_i]["qas"][q_i]["answers"][a_i]["text"] +
-                                      " | " + answer["text"] + "\n")
+                            log.write(
+                                f'{dataset_english["data"][d_i]["paragraphs"][p_i]["qas"][q_i]["answers"][a_i]["text"]}'
+                                f';'
+                                f'{answer["text"]}\n')
                         pbar.update(1)
                         pbar.set_description(f'Found: {((correct + corrected) / checked) * 100:.2f}%')
     log.close()
@@ -83,4 +85,4 @@ def correct_translation(input_translated, input_english, output_path, document_l
 
 
 if __name__ == '__main__':
-    correct_translation("output/dev-v2.0_translated.json", "../data/dev-v2.0.json", "output", 5)
+    correct_translation("output/dev-v2.0_translated.json", "../data/dev-v2.0.json", "output")
