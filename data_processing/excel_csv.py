@@ -73,16 +73,24 @@ def create_random_data(data_path_eng, data_path_slo, output_path, n_samples):
             context_eng = excel_data_eng_n[i][1]["context"]
             context_slo = excel_data_slo_n[i][1]["context"]
 
-            writer.writerow([id_eng, id_slo])
-            writer.writerow([context_eng, context_slo])
-
+            answerable_questions = 0
             for j in range(len(excel_data_eng_n[i][1]["qas"])):
                 if excel_data_eng_n[i][1]["qas"][j]["is_impossible"]:
                     continue
                 question_eng = excel_data_eng_n[i][1]["qas"][j]["question"]
                 question_slo = excel_data_slo_n[i][1]["qas"][j]["question"]
-                writer.writerow([question_eng, question_slo])
+                answer_counter = 0
                 for k in range(len(excel_data_eng_n[i][1]["qas"][j]["answers"])):
+                    if excel_data_slo_n[i][1]["qas"][j]["answers"][k]["answer_start"] == -1:
+                        continue
+                    answer_counter += 1
+                    if answer_counter == 1:
+                        answerable_questions += 1
+                        if answerable_questions == 1:  # context zapisemo ce ima vsaj eno vprasanje z odgovorom
+                            writer.writerow([id_eng, id_slo])
+                            writer.writerow([context_eng, context_slo])
+                        writer.writerow([question_eng, question_slo])  # uprasanje zapisemo ce ima usaj en odgovor
+
                     answer_eng = excel_data_eng_n[i][1]["qas"][j]["answers"][k]["text"]
                     answer_slo = excel_data_slo_n[i][1]["qas"][j]["answers"][k]["text"]
                     writer.writerow([answer_eng, answer_slo])
