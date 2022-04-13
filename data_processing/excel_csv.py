@@ -74,6 +74,8 @@ def create_random_data(data_path_eng, data_path_slo, output_path, n_samples):
             context_slo = excel_data_slo_n[i][1]["context"]
 
             answerable_questions = 0
+            qa_ids = ""
+            data_under_context = [] # tukaj notri so vprasanja in odgovori
             for j in range(len(excel_data_eng_n[i][1]["qas"])):
                 if excel_data_eng_n[i][1]["qas"][j]["is_impossible"]:
                     continue
@@ -86,18 +88,24 @@ def create_random_data(data_path_eng, data_path_slo, output_path, n_samples):
                     answer_counter += 1
                     if answer_counter == 1:
                         answerable_questions += 1
-                        if answerable_questions == 1:  # context zapisemo ce ima vsaj eno vprasanje z odgovorom
-                            writer.writerow([id_eng, id_slo])
-                            writer.writerow([context_eng, context_slo])
-                        writer.writerow([question_eng, question_slo])  # uprasanje zapisemo ce ima usaj en odgovor
-
+                        data_under_context.append([question_eng, question_slo])
+                        qa_ids += str(j) + "#"
+                     #   writer.writerow([question_eng, question_slo])  # uprasanje zapisemo ce ima usaj en odgovor
                     answer_eng = excel_data_eng_n[i][1]["qas"][j]["answers"][k]["text"]
                     answer_slo = excel_data_slo_n[i][1]["qas"][j]["answers"][k]["text"]
-                    writer.writerow([answer_eng, answer_slo])
+                    qa_ids += str(k) + "-"
+                    data_under_context.append([answer_eng, answer_slo])
+                   # writer.writerow([answer_eng, answer_slo])
+                if qa_ids.endswith("-"):
+                    qa_ids = qa_ids[:-1] + "#"
+            if answerable_questions > 0:
+                writer.writerow([id_eng + "_" + qa_ids, id_slo + "_" + qa_ids])
+                writer.writerow([context_eng, context_slo])
+                writer.writerows(data_under_context)
 
     csv_to_excel("out.csv", "excel_za_meto.xlsx")
 
-create_random_data("../data/train-v2.0.json", "./output/train-v2.0_translated.json", "out.csv", 5)
+create_random_data("../data/dev-v2.0.json", "./output/dev-v2.0_translated_corrected.json", "out.csv", 5)
 
 
 #excel_to_csv("Test.xlsx", "Test.csv")
