@@ -12,23 +12,38 @@ def csv_to_excel(input_file, output_file):
 
     read_file.to_excel(output_file, index=None, header=False)
 
-def excel_to_csv(input_file, output_file):
-    # Read and store content
-    # of an excel file
-    read_file = pd.read_excel(input_file)
 
-    # Write the dataframe object
-    # into csv file
-    read_file.to_csv(output_file,
-                     index=None,
-                     header=False)
+def read_translated_csv(path):
+    data_dict = {"data": []}
+    with open(path, 'r', encoding='utf-8') as f:
+        while True:
+            line = f.readline()
+            if line == "":
+                break
+            data = line.rstrip('\n').rstrip('\r').split(";")
+            qas = []
+            if "_" in line and "#" in line and data[0] == data[1]:
+                podatki = data[0].split("#")
+                num_of_questions = int(len(podatki) / 2)
+                num_of_answers = []
+                for i, item in enumerate(podatki):
+                    if i % 2 != 0:
+                        item = item.split("-")
+                        num_of_answers.append(len(item))
 
-    # read csv file and convert
-    # into a dataframe object
-    df = pd.DataFrame(pd.read_csv(output_file))
+                context = f.readline().rstrip('\n').rstrip('\r').split(";")[1]
+                for i in range(num_of_questions):
+                    answers = []
+                    question = f.readline().rstrip('\n').rstrip('\r').split(";")[1]
+                    for j in range(num_of_answers[i]):
+                        answers.append({"text": f.readline().rstrip('\n').rstrip('\r').split(";")[1]})
+                    qas.append({"question": question, "answers": answers})
 
-    # show the dataframe
-    print(df)
+                data_dict["data"].append({"id": data[0], "qas": qas, "context": context})
+
+    with open("./output/prevod_meta.json", "w", encoding="utf8") as f:
+        f.write(json.dumps(data_dict, ensure_ascii=False))
+
 
 def create_random_data(data_path_eng, data_path_slo, output_path, n_samples):
     f = open(data_path_eng, encoding='utf-8')
@@ -75,7 +90,7 @@ def create_random_data(data_path_eng, data_path_slo, output_path, n_samples):
 
             answerable_questions = 0
             qa_ids = ""
-            data_under_context = [] # tukaj notri so vprasanja in odgovori
+            data_under_context = []  # tukaj notri so vprasanja in odgovori
             for j in range(len(excel_data_eng_n[i][1]["qas"])):
                 if excel_data_eng_n[i][1]["qas"][j]["is_impossible"]:
                     continue
@@ -90,12 +105,12 @@ def create_random_data(data_path_eng, data_path_slo, output_path, n_samples):
                         answerable_questions += 1
                         data_under_context.append([question_eng, question_slo])
                         qa_ids += str(j) + "#"
-                     #   writer.writerow([question_eng, question_slo])  # uprasanje zapisemo ce ima usaj en odgovor
+                    #   writer.writerow([question_eng, question_slo])  # uprasanje zapisemo ce ima usaj en odgovor
                     answer_eng = excel_data_eng_n[i][1]["qas"][j]["answers"][k]["text"]
                     answer_slo = excel_data_slo_n[i][1]["qas"][j]["answers"][k]["text"]
                     qa_ids += str(k) + "-"
                     data_under_context.append([answer_eng, answer_slo])
-                   # writer.writerow([answer_eng, answer_slo])
+                # writer.writerow([answer_eng, answer_slo])
                 if qa_ids.endswith("-"):
                     qa_ids = qa_ids[:-1] + "#"
             if answerable_questions > 0:
@@ -103,10 +118,11 @@ def create_random_data(data_path_eng, data_path_slo, output_path, n_samples):
                 writer.writerow([context_eng, context_slo])
                 writer.writerows(data_under_context)
 
-    csv_to_excel("out.csv", "excel_za_meto.xlsx")
-
-create_random_data("../data/dev-v2.0.json", "./output/dev-v2.0_translated_corrected.json", "out.csv", 5)
+    csv_to_excel(output_path, "./output/excel_za_meto.xlsx")
 
 
-#excel_to_csv("Test.xlsx", "Test.csv")
+# create_random_data("../data/dev-v2.0.json", "./output/dev-v2.0_translated_corrected.json", "./output/out.csv", 10)
+# read_translated_csv("./output/excel_za_meto.csv")
+# read_translated_csv("./input/prvi_prevodi_Meta_popravljeno.csv")
 
+# excel_to_csv("Test.xlsx", "Test.csv")
