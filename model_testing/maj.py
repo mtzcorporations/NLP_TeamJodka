@@ -3,21 +3,22 @@ from datasets import load_dataset
 from torch.nn import functional as F
 import json
 import torch
-from sklearn.metrics import precision_recall_fscore_support, accuracy_score
+# from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 from data_processing.reformat_squad_for_trainer import reformat_data
 import subprocess
+import os
 
-def compute_metrics(pred):
-    labels = pred.label_ids
-    preds = pred.predictions.argmax(-1)
-    precision, recall, f1, _ = precision_recall_fscore_support(labels, preds, average='binary')
-    acc = accuracy_score(labels, preds)
-    return {
-        'accuracy': acc,
-        'f1': f1,
-        'precision': precision,
-        'recall': recall
-    }
+# def compute_metrics(pred):
+#     labels = pred.label_ids
+#     preds = pred.predictions.argmax(-1)
+#     precision, recall, f1, _ = precision_recall_fscore_support(labels, preds, average='binary')
+#     acc = accuracy_score(labels, preds)
+#     return {
+#         'accuracy': acc,
+#         'f1': f1,
+#         'precision': precision,
+#         'recall': recall
+#     }
 
 def get_prediction(model_name, question, context):
     nlp = pipeline('question-answering', model=model_name, tokenizer=model_name)
@@ -120,21 +121,25 @@ def fine_tune(virtual_env):
                            '--cache_dir', '../cache',
                            '--train_file', '../data_processing/output/reformated_train-v2.0.json',
                            '--validation_file', '../data_processing/output/reformated_dev-v2.0.json',
-                           '--do_train', 'True',
-                           '--do_eval', 'True',
-                           '--per_device_train_batch_size', '12',
+                           '--do_train',
+                           '--do_eval',
+                           '--per_device_train_batch_size', '6',
                            '--learning_rate', '3e-5',
                            '--num_train_epochs', '2',
-                           '--max_seq_length', '384',
+                           '--max_seq_length', '300',
                            '--doc_stride', '128',
                            '--output_dir', '/tmp/debug_squad_v2/',
-                           '--version_2_with_negative', 'True',
+                           '--version_2_with_negative'
                            ])
+
+    # pr = subprocess.Popen([virtual_env, './fine_tune_HF.py',
+    #                        '--help',
+    #                        ])
     stdout, stderr = pr.communicate()
     print(stdout)
     print(stderr)
 
-fine_tune("D:\\1.letnik_mag\\semester2\\INA\\domace_naloge\\NLP_TeamJodka\\Scripts\\python.exe")
+fine_tune("D:\\Anaconda\\envs\\NLP_TeamJodka\\python.exe")
 
 # train_xlm_r("deepset/xlm-roberta-large-squad2")
 # a-ware/xlmroberta-squadv2
