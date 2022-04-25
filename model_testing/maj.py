@@ -5,6 +5,7 @@ import json
 import torch
 from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 from data_processing.reformat_squad_for_trainer import reformat_data
+import subprocess
 
 def compute_metrics(pred):
     labels = pred.label_ids
@@ -36,7 +37,7 @@ def train_xlm_r(model_name):
     # train_data = [item for topic in train_data['data'] for item in topic['paragraphs']]
     #
 
-    model = AutoModelForQuestionAnswering.from_pretrained(model_name)
+    model = AutoModelForQuestionAnswering.from_pretrained(model_name, cache_dir="../cache")
     model.train()
 
     # We can use any PyTorch optimizer, but our library also provides the AdamW() optimizer which implements gradient bias correction as well as weight decay.
@@ -89,8 +90,8 @@ def trainer(model_name):
                            cache_dir="../data/reformated/train_eng")
     print(dataset)
 
-    # model = AutoModelForQuestionAnswering.from_pretrained(model_name, cache_dir="../transformers")
-    # tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir="../transformers")
+    # model = AutoModelForQuestionAnswering.from_pretrained(model_name, cache_dir="../cache")
+    # tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir="../cache")
     # training_args = TrainingArguments(
     #     output_dir='./results',  # output directory
     #     num_train_epochs=2,  # total # of training epochs
@@ -112,7 +113,32 @@ def trainer(model_name):
     # trainer.evaluate()
 
 
-# train_xlm_r("deepset/xlm-roberta-large-squad2")
-# Palak/xlm-roberta-large_squad
+def fine_tune(virtual_env):
+    pr = subprocess.Popen([virtual_env, './fine_tune_HF.py',
+                           '--model_name_or_path', 'xlm-roberta-base',
+                           # '--dataset_name', 'squad_v2',
+                           '--cache_dir', '../cache',
+                           '--train_file', '../data_processing/output/reformated_train-v2.0.json',
+                           '--validation_file', '../data_processing/output/reformated_dev-v2.0.json',
+                           '--do_train', 'True',
+                           '--do_eval', 'True',
+                           '--per_device_train_batch_size', '12',
+                           '--learning_rate', '3e-5',
+                           '--num_train_epochs', '2',
+                           '--max_seq_length', '384',
+                           '--doc_stride', '128',
+                           '--output_dir', '/tmp/debug_squad_v2/',
+                           '--version_2_with_negative', 'True',
+                           ])
+    stdout, stderr = pr.communicate()
+    print(stdout)
+    print(stderr)
 
-trainer("xlm-roberta-large")
+fine_tune("D:\\1.letnik_mag\\semester2\\INA\\domace_naloge\\NLP_TeamJodka\\Scripts\\python.exe")
+
+# train_xlm_r("deepset/xlm-roberta-large-squad2")
+# a-ware/xlmroberta-squadv2
+# sontn122/xlm-roberta-large-finetuned-squad-v2
+
+#trainer("xlm-roberta-large")
+
