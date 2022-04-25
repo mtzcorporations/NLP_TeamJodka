@@ -159,5 +159,8 @@ literature
 input
 output
 
+models
+transformers
+
 /data_processing/out.csv
 /data_processing/excel_za_meto.xlsx
