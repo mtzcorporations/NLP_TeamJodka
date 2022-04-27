@@ -113,22 +113,33 @@ def trainer(model_name):
     # trainer.train()
     # trainer.evaluate()
 
+def eval(virtual_env, model_name):
+    pr = subprocess.Popen([virtual_env, './fine_tune_HF.py',
+                           '--model_name_or_path', model_name,
+                           '--cache_dir', '../cache',
+                           '--validation_file', '../data_processing/output/reformated_dev-v2.0.json',
+                           '--do_eval',
+                           '--output_dir', './eval/' + model_name + '/',
+                           '--version_2_with_negative'
+                           ])
+    stdout, stderr = pr.communicate()
+
 
 def fine_tune(virtual_env):
     pr = subprocess.Popen([virtual_env, './fine_tune_HF.py',
                            '--model_name_or_path', 'xlm-roberta-base',
                            # '--dataset_name', 'squad_v2',
                            '--cache_dir', '../cache',
-                           '--train_file', '../data_processing/output/reformated_train-v2.0.json',
+                           # '--train_file', '../data_processing/output/reformated_train-v2.0.json',
                            '--validation_file', '../data_processing/output/reformated_dev-v2.0.json',
-                           '--do_train',
+                           # '--do_train',
                            '--do_eval',
-                           '--per_device_train_batch_size', '6',
+                           '--per_device_train_batch_size', '4',
                            '--learning_rate', '3e-5',
                            '--num_train_epochs', '2',
-                           '--max_seq_length', '300',
+                           '--max_seq_length', '320',
                            '--doc_stride', '128',
-                           '--output_dir', '/tmp/debug_squad_v2/',
+                           '--output_dir', './eval/debug_squad_v2/',
                            '--version_2_with_negative'
                            ])
 
@@ -139,11 +150,12 @@ def fine_tune(virtual_env):
     print(stdout)
     print(stderr)
 
-fine_tune("D:\\Anaconda\\envs\\NLP_TeamJodka\\python.exe")
-
+# fine_tune("D:\\Anaconda\\envs\\NLP_TeamJodka\\python.exe")
 # train_xlm_r("deepset/xlm-roberta-large-squad2")
 # a-ware/xlmroberta-squadv2
 # sontn122/xlm-roberta-large-finetuned-squad-v2
+
+eval("D:\\Anaconda\\envs\\NLP_TeamJodka\\python.exe", "deepset/xlm-roberta-large-squad2")
 
 #trainer("xlm-roberta-large")
 
