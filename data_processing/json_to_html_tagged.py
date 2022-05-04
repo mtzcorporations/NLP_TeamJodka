@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 global file_index, current_file
 
-MAX_FILE_SIZE = 12
+MAX_FILE_SIZE = 4
 ANSWER_TAG = "b"
 
 def check_file_size(input_path, output_path):
@@ -67,7 +67,7 @@ def json_to_html(input_path, output_path):
                                             f"{context[answer_start:answer_end]}</{ANSWER_TAG}>{context[answer_end:]}"
 
                         write_tag("answer", input_path, output_path, True, a_i)
-                        write_text("text", answer["text"], input_path, output_path)
+                        # write_text("text", answer["text"], input_path, output_path)
                         write_text("in_context", answer_in_context, input_path, output_path)
                         write_tag("answer", input_path, output_path, False, a_i)
 
@@ -79,4 +79,4 @@ def json_to_html(input_path, output_path):
 
 
 if __name__ == '__main__':
-    json_to_html("../data/dev-v2.0.json", "output")
+    json_to_html("../data/train-v2.0.json", "output")

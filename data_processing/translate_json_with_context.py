@@ -1,3 +1,4 @@
+import glob
 import json
 import copy
 import os
@@ -12,7 +13,13 @@ def json_to_html(input_english_json, input_translated_html, output_path):
 
     json_output = copy.deepcopy(json_english)
 
-    if not isinstance(input_translated_html, list):
+    def get_order(file):
+        g = re.findall(r'.*_(\d+)_.*', file)
+        return int(g[0])
+
+    if os.path.isdir(input_translated_html):
+        input_translated_html = sorted(glob.glob(os.path.join(input_translated_html, '*.html')), key=get_order)
+    elif not isinstance(input_translated_html, list):
         input_translated_html = [input_translated_html]
 
     indexes = {}
@@ -92,7 +99,8 @@ def json_to_html(input_english_json, input_translated_html, output_path):
 
 
 if __name__ == '__main__':
-    json_to_html("../data/dev-v2.0.json", ["input/dev-v2.0_0_SL.html", "input/dev-v2.0_1_SL.html",
-                                           "input/dev-v2.0_2_SL.html"], "output")
+    json_to_html("../data/train-v2.0.json", "input/train_translated", "output")
+    # json_to_html("../data/dev-v2.0.json", ["input/dev-v2.0_0_SL.html", "input/dev-v2.0_1_SL.html",
+    #                                        "input/dev-v2.0_2_SL.html"], "output")
     # json_to_html("../data/train-v2.0.json", ["input/train-v2.0_0_SL.html", "input/train-v2.0_1_SL.html",
     #                                          "input/train-v2.0_2_SL.html", "input/train-v2.0_3_SL.html"], "output")

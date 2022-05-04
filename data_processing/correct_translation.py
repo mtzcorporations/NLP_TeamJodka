@@ -15,12 +15,13 @@ def create_lemma_array(text, nlp):
 
 
 def correct_translation(input_translated, input_english, output_path, document_limit=-1):
-    classla.download('sl')
-    nlp = classla.Pipeline('sl', processors='tokenize,ner,pos,lemma,depparse')
     with open(input_translated, encoding="utf8") as f:
         dataset = json.load(f)
     with open(input_english, encoding="utf8") as f:
         dataset_english = json.load(f)
+
+    classla.download('sl')
+    nlp = classla.Pipeline('sl', processors='tokenize,ner,pos,lemma,depparse')
 
     if document_limit > 0:
         dataset["data"] = dataset["data"][:document_limit]
@@ -88,4 +89,5 @@ def correct_translation(input_translated, input_english, output_path, document_l
 
 
 if __name__ == '__main__':
-    correct_translation("output/dev-v2.0_translated.json", "../data/dev-v2.0.json", "output")
+    # correct_translation("output/train-v2.0_translated.json", "../data/train-v2.0.json", "output")
+    correct_translation("output/dev-v2.0_translated_old.json", "../data/dev-v2.0.json", "output")
