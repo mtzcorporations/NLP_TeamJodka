@@ -6,7 +6,8 @@
 
 ### Dependencies 
 - Python 3
-- [PyTorch](https://pytorch.org/) (currently tested on version 1.7.0)
+- [PyTorch](https://pytorch.org/) (currently tested on version 1.11.0)
+- Transformers(https://github.com/huggingface/transformers) from HuggingFace (currently tested on version 4.19.0.dev0)
 
 ### Quick installation
 ```bash
