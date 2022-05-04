@@ -10,13 +10,18 @@ def reformat_data(data_path, outputh_path):
         for paragraph in item["paragraphs"]:
             for qa in paragraph["qas"]:
                 answers = {"text": [], "answer_start": []}
+                pog = False
                 for answer in qa["answers"]:
-                    answers["text"].append(answer["text"])
-                    answers["answer_start"].append(answer["answer_start"])
-                trainer_data.append({"id": qa["id"], "title": item["title"], "context": paragraph["context"], "question": qa["question"], "answers": answers})
+                    if(int(answer["answer_start"])!=-1):
+                        pog=True
+                        answers["text"].append(answer["text"])
+                        answers["answer_start"].append(answer["answer_start"])
+                if(pog):
+                    trainer_data.append({"id": qa["id"], "title": item["title"], "context": paragraph["context"], "question": qa["question"], "answers": answers})
     json_new = {"version": "v2.0", "data": trainer_data}
     with open(outputh_path, "w", encoding="utf8") as f:
         f.write(json.dumps(json_new, ensure_ascii=False))
     return trainer_data
 
-reformat_data('../data/train-v2.0.json', "../data_processing/output/reformated_train-v2.0.json")
+reformat_data('../data/dev-v2.0_translated_correctedSLO.json',"../data_processing/output/rf_dev-v2.0_translated_correctedSLO.json")
+reformat_data( '../data/train-v2.0_translated_correctedSLO.json',"../data_processing/output/rf_train-v2.0_translated_correctedSLO.json")

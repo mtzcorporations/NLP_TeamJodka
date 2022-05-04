@@ -159,8 +159,10 @@ literature
 input
 output
 
-models
+models/
 cache
+model_testing/models
+model_testing/eval
 
 /data_processing/out.csv
 /data_processing/excel_za_meto.xlsx
