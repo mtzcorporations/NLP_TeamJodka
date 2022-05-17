@@ -12,11 +12,11 @@ def get_prediction(model_name, question, context):
 
 #get_prediction("deepset/xlm-roberta-large-squad2", 'Kdaj se je pojavila Frankovska identiteta?', "Normani (Norman: Nourmands; Francoščina: Normandi; Latinščina: Normanni) so bili ljudje, ki so v 10. in 11. stoletju dali ime Normandiji, regiji v Franciji. Bili so potomci nordijskih plenilcev in piratov iz Danske, Islandije in Norveške, ki so pod svojim voditeljem Rollom prisegli zvestobo kralju Karlu III. iz Zahodne Frankovske. Skozi generacije asimilacije in mešanja z domačimi frankovskimi in rimsko-gavskimi populacijami so se njihovi potomci postopoma združili s karolinškimi kulturami Zahodne Frankovske. Posebna kulturna in etnična identiteta Normanov se je sprva pojavila v prvi polovici 10. stoletja in se je razvijala v naslednjih stoletjih.")
 
-def eval(virtual_env, model_name):
+def eval(virtual_env, model_name, data_path):
     pr = subprocess.Popen([virtual_env, './fine_tune_HF.py',
                            '--model_name_or_path', model_name,
                            '--cache_dir', '../cache',
-                           '--validation_file', '../data_processing/output/rf_dev-v2.0_translated_corrected.json',
+                           '--validation_file', data_path,
                            '--do_eval',
                            '--output_dir', './eval/' + model_name + '/',
                            '--version_2_with_negative'
@@ -54,8 +54,8 @@ def fine_tune(virtual_env):
 # a-ware/xlmroberta-squadv2
 # sontn122/xlm-roberta-large-finetuned-squad-v2
 
-# eval("D:\\Anaconda\\envs\\NLP_TeamJodka\\python.exe", "deepset/xlm-roberta-large-squad2")
-eval("G:\\NLP\\NLP_TeamJodka\\venv\\Scripts\\python.exe", "bert-base-multilingual-cased")
+eval("D:\\Anaconda\\envs\\NLP_TeamJodka\\python.exe", "deepset/xlm-roberta-large-squad2", "../data_processing/output/prevod_meta.json")
+# eval("G:\\NLP\\NLP_TeamJodka\\venv\\Scripts\\python.exe", "bert-base-multilingual-cased")
 
 #trainer("xlm-roberta-large")
 

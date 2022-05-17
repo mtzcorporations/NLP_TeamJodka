@@ -1,21 +1,33 @@
-from transformers import pipeline
+from transformers import pipeline, AutoModelForQuestionAnswering, AutoTokenizer
 import json
 
-
-def read_translated_csv(path):
-    # data_dict = {"data": []}
-    reformated_data = []
-    with open(path, 'r', encoding='utf-8') as f:
+def fix_csv(csv_path):
+    with open(csv_path, 'r', encoding='utf-8') as f:
+        fix = open('../data_processing/output/fixed_csv.txt', 'w', encoding='utf-8')
         while True:
             line = f.readline()
-            # if line == '"\n':
-            #     continue
+            if line == '"\n':
+                continue
             line = line.replace('"', '')
             if line == "":
                 break
+            # print(line)
+            # data = line.rstrip('\n').rstrip('\r').split(";")
+            fix.write(line)
+        fix.close()
 
+
+def create_json_from_translations(path):
+    # data_dict = {"data": []}
+    reformated_data = []
+    with open(path, 'r', encoding='utf-8-sig') as f:
+        while True:
+            line = f.readline()
+            if line == "":
+                break
             data = line.rstrip('\n').rstrip('\r').split(";")
             # qas = []
+            # print(data)
             if "_" in line and "#" in line and data[0] == data[1]:
                 podatki = data[0].split("#")
                 num_of_questions = int(len(podatki) / 2)
@@ -44,18 +56,54 @@ def read_translated_csv(path):
     # with open("../data_processing/output/prevod_meta.json", "w", encoding="utf8") as f:
     #     f.write(json.dumps(data_dict, ensure_ascii=False))
 
-def get_prediction(model_name, question, context):
-    nlp = pipeline('question-answering', model=model_name, tokenizer=model_name)
-    QA_input = {
-        'question': question,
-        'context': context
-    }
-    res = nlp(QA_input)
-    print(res)
-    return res
 
-def evaluate(data_path, model_name):
-    read_translated_csv(data_path)
-    # get_prediction(model_name, "Who like's stones?", "Davor likes stones.")
+def evaluate_json(data_path, model_name_or_path, cache_dir):
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name_or_path,
+        cache_dir=cache_dir,
+        use_fast=True,
+        revision="main",
+        use_auth_token=None,
+    )
+    model = AutoModelForQuestionAnswering.from_pretrained(
+        model_name_or_path,
+        from_tf=bool(".ckpt" in model_name_or_path),
+        # config=config,
+        cache_dir=cache_dir,
+        revision="main",
+        use_auth_token=None,
+    )
+    nlp = pipeline('question-answering', model=model, tokenizer=tokenizer)
+    with open(data_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    all_questions = 0
+    correct_answers = 0
+    for item in data["data"]:
+        all_questions += 1
+        context = item["context"]
+        question = item["question"]
+        answers = item["answers"]
+        QA_input = {
+            'question': question,
+            'context': context
+        }
+        res = nlp(QA_input)
+        # print("Result: ", res)
+        # print("True answers: ", answers)
+        res = res["answer"]
+        res = res.strip()
+        if res[-1] in [".", "!", "?"]:
+            res = res[:-1]
+        for answer in answers:
+            if res == answer["text"]:
+                correct_answers += 1
+                break
 
-evaluate("./Drugi_prevodi_final.csv", "deepset/xlm-roberta-large-squad2")
+    print("All questions: ", all_questions)
+    print("Correct answers: ", correct_answers)
+    print("Final score: ", correct_answers / all_questions)
+
+
+# fix_csv("Drugi_prevodi_final.csv")
+# create_json_from_translations("../data_processing/output/fixed_csv.txt")
+evaluate_json("../data_processing/output/prevod_meta.json", "deepset/xlm-roberta-large-squad2", "../cache")
