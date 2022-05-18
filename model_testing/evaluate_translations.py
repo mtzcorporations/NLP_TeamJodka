@@ -57,7 +57,6 @@ def create_json_from_translations(paths, tip):
     # with open("../data_processing/output/prevod_meta.json", "w", encoding="utf8") as f:
     #     f.write(json.dumps(data_dict, ensure_ascii=False))
 
-
 def evaluate_json(data_path, model_name_or_path, cache_dir):
     tokenizer = AutoTokenizer.from_pretrained(
         model_name_or_path,
@@ -93,8 +92,10 @@ def evaluate_json(data_path, model_name_or_path, cache_dir):
         # print("True answers: ", answers)
         res = res["answer"]
         result = res.strip()
-        if result[-1] in [".", "!", "?", ",", ":"]:
+        if result[-1] in [".", "!", "?", ",", ":", ")"]:
             result = result[:-1]
+        if result[0] in ["("]:
+            result = result[1:]
         found_answer = False
         for answer in answers:
             if result == answer["text"]:
@@ -110,9 +111,9 @@ def evaluate_json(data_path, model_name_or_path, cache_dir):
     print("Final score: ", correct_answers / all_questions)
 
 
-# fix_csv("Drugi_prevodi_final.csv", "2")
-create_json_from_translations(["../data_processing/output/fixed_csv2.txt", "../data_processing/output/fixed_csv3.txt", "../data_processing/output/fixed_csv4.txt"], "meta")
+# fix_csv("cetrti_prevodi_koncano.csv", "4")
+# create_json_from_translations(["../data_processing/output/fixed_csv2.txt", "../data_processing/output/fixed_csv3.txt", "../data_processing/output/fixed_csv4.txt"], "meta")
 # create_json_from_translations(["./drugi_prevodi_auto.csv", "./tretji_prevodi_auto.csv", "./cetrti_prevodi_auto.csv"], "auto")
 
 
-# evaluate_json("../data_processing/output/prevod_meta.json", "deepset/xlm-roberta-large-squad2", "../cache")
+evaluate_json("../data_processing/output/prevod_auto.json", "deepset/xlm-roberta-large-squad2", "../cache")
