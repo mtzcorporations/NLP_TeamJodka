@@ -54,8 +54,8 @@ def fine_tune(virtual_env):
 # a-ware/xlmroberta-squadv2
 # sontn122/xlm-roberta-large-finetuned-squad-v2
 
-eval("D:\\Anaconda\\envs\\NLP_TeamJodka\\python.exe", "deepset/xlm-roberta-large-squad2", "../data_processing/output/prevod_meta.json")
-# eval("G:\\NLP\\NLP_TeamJodka\\venv\\Scripts\\python.exe", "bert-base-multilingual-cased")
+# eval("D:\\Anaconda\\envs\\NLP_TeamJodka\\python.exe", "deepset/xlm-roberta-large-squad2", "../data_processing/output/prevod_meta.json")
+eval("G:\\NLP\\NLP_TeamJodka\\venv\\Scripts\\python.exe", "bert-base-multilingual-cased", "../data_processing/output/prevod_meta.json")
 
 #trainer("xlm-roberta-large")
 
