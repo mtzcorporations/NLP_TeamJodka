@@ -1,8 +1,8 @@
 classla~=1.1.0
-numpy~=1.22.3
-tqdm~=4.64.0
+numpy
+tqdm
 datasets >= 1.8.0
 torch >= 1.3.0
 git+https://github.com/huggingface/transformers
-pandas~=1.4.2
+pandas
 openpyxl~=3.0.9
