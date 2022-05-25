@@ -36,7 +36,7 @@ python training_and_evaluation/fine_tune_HF.py --do_eval --model_name_or_path Si
 python training_and_evaluation/fine_tune_HF.py --do_train --model_name_or_path models/mBertBase_ENG --train_file data/rf_train-v2.0_SLO_translated_corrected.json --validation_file data/rf_dev-v2.0_SLO_translated_corrected.json --per_device_train_batch_size 4 --learning_rate 3e-5 --num_train_epochs 3 --max_seq_length 320 --output_dir results/fine_tuning--version_2_with_negative
 ```
 
-#### List of Additional Parameters and Descriptions
+#### List additional parameters and their descriptions
 ```bash
 python training_and_evaluation/fine_tune_HF.py -h
 ```
