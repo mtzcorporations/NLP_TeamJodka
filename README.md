@@ -1,4 +1,4 @@
-# Cross-lingual question answering
+# Cross-Lingual Question Answering
 ### Matjaž Zupanič, Maj Zirkelbach, Uroš Šmajdek and Meta Jazbinšek
 ##### Joint project between Faculty of Computer and Information Science and Faculty of Arts, University of Ljubljana
 
@@ -26,7 +26,7 @@ pip install -r requirements.txt
 #### Model Evaluation
 *The below will evaluate RemBERT on Slovene machine translated dataset localed in data folder.*
 ```bash
-python training_and_evaluation/fine_tune_HF.py --do_eval --model_name_or_path Sindhu/rembert-squad2 --validation_file data/rf_dev-v2.0_SLO_translated_corrected.json --version_2_with_negative
+python training_and_evaluation/fine_tune_HF.py --do_eval --model_name_or_path Sindhu/rembert-squad2 --validation_file data/rf_dev-v2.0_SLO_translated_corrected.json --output_dir output/rembert --version_2_with_negative
 ```
 
 #### Fine-Tuning
