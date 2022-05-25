@@ -51,5 +51,6 @@ def find_impossible_questions(data_path_eng, data_path_slo, data_path_translated
     csv_to_excel("output/temp.csv", os.path.join("output", output_name + ".xlsx"))
     os.remove("output/temp.csv")
 
-find_impossible_questions("../data/dev-v2.0.json", "./output/dev-v2.0_translated_corrected.json",
+if __name__ == '__main__':
+    find_impossible_questions("../data/dev-v2.0.json", "./output/dev-v2.0_translated_corrected.json",
                           "../data/translations/test_slo.json", "impossible_questions")

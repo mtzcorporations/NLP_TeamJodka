@@ -87,9 +87,9 @@ def combine_results(data_path_eng, results_path_eng, data_path_slo_auto, results
             context_slo_auto = qas_slo_auto["context"]
             context_slo = qas_slo["context"]
             row_index += 1
-            ws1.merge_cells(start_row=row_index, start_column=1, end_row=row_index, end_column=3)
-            ws1.merge_cells(start_row=row_index, start_column=4, end_row=row_index, end_column=6)
-            ws1.merge_cells(start_row=row_index, start_column=7, end_row=row_index, end_column=9)
+            # ws1.merge_cells(start_row=row_index, start_column=1, end_row=row_index, end_column=3)
+            # ws1.merge_cells(start_row=row_index, start_column=4, end_row=row_index, end_column=6)
+            # ws1.merge_cells(start_row=row_index, start_column=7, end_row=row_index, end_column=9)
             ws1.cell(column=1, row=row_index, value=context_eng)
             ws1.cell(column=4, row=row_index, value=context_slo_auto)
             ws1.cell(column=7, row=row_index, value=context_slo)
@@ -103,13 +103,13 @@ def combine_results(data_path_eng, results_path_eng, data_path_slo_auto, results
         answers_slo = get_answers(qas_slo)
 
         row_index += 1
-        if len(answers_eng) > 1:
-            ws1.merge_cells(start_row=row_index, start_column=1, end_row=row_index + len(answers_eng) - 1, end_column=1)
-            ws1.merge_cells(start_row=row_index, start_column=3, end_row=row_index + len(answers_eng) - 1, end_column=3)
-            ws1.merge_cells(start_row=row_index, start_column=4, end_row=row_index + len(answers_eng) - 1, end_column=4)
-            ws1.merge_cells(start_row=row_index, start_column=6, end_row=row_index + len(answers_eng) - 1, end_column=6)
-            ws1.merge_cells(start_row=row_index, start_column=7, end_row=row_index + len(answers_eng) - 1, end_column=7)
-            ws1.merge_cells(start_row=row_index, start_column=9, end_row=row_index + len(answers_eng) - 1, end_column=9)
+        # if len(answers_eng) > 1:
+        #     ws1.merge_cells(start_row=row_index, start_column=1, end_row=row_index + len(answers_eng) - 1, end_column=1)
+        #     ws1.merge_cells(start_row=row_index, start_column=3, end_row=row_index + len(answers_eng) - 1, end_column=3)
+        #     ws1.merge_cells(start_row=row_index, start_column=4, end_row=row_index + len(answers_eng) - 1, end_column=4)
+        #     ws1.merge_cells(start_row=row_index, start_column=6, end_row=row_index + len(answers_eng) - 1, end_column=6)
+        #     ws1.merge_cells(start_row=row_index, start_column=7, end_row=row_index + len(answers_eng) - 1, end_column=7)
+        #     ws1.merge_cells(start_row=row_index, start_column=9, end_row=row_index + len(answers_eng) - 1, end_column=9)
 
         ws1.cell(column=1, row=row_index, value=question_eng).alignment = top_alignment
         ws1.cell(column=3, row=row_index, value=result_eng).alignment = top_alignment

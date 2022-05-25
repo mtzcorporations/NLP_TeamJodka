@@ -119,10 +119,3 @@ def create_random_data(data_path_eng, data_path_slo, output_path, n_samples):
                 writer.writerows(data_under_context)
 
     csv_to_excel(output_path, "./output/excel_za_meto.xlsx")
-
-
-# create_random_data("../data/dev-v2.0.json", "./output/dev-v2.0_translated_corrected.json", "./output/out.csv", 10)
-# read_translated_csv("./output/excel_za_meto.csv")
-# read_translated_csv("./input/prvi_prevodi_Meta_popravljeno.csv")
-
-# excel_to_csv("Test.xlsx", "Test.csv")

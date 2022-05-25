@@ -48,5 +48,5 @@ def equalise_sets(input_translated, input_english, output_path):
 
 
 if __name__ == '__main__':
-    equalise_sets("output/dev-v2.0_translated_corrected.json", "../data/dev-v2.0.json",
-                  "output/dev-v2.0_normalized.json")
+    equalise_sets("output/train-v2.0_translated_corrected.json", "../data/train-v2.0.json",
+                  "output/train-v2.0_normalized.json")

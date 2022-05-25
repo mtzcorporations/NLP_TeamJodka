@@ -4,7 +4,7 @@ import glob
 import openpyxl
 
 
-def excel_to_eval_json(paths, output, auto_translation_json=None):
+def excel_to_eval_json(paths, output, auto_translation_json=None, impossible_questions_path=None):
     if not isinstance(paths, list):
         if os.path.isdir(paths):
             paths = glob.glob(paths + "/*.xlsx")
@@ -83,7 +83,6 @@ def excel_to_eval_json(paths, output, auto_translation_json=None):
                             answers_auto["text"].append(answer_auto["text"])
                             answers_auto["answer_start"].append(answer_auto["answer_start"])
 
-
                     json_eng["data"].append(
                         {"id": f'{context_id}&{i}', "title": "", "context": context_eng, "question": question_eng,
                          "answers": answers_eng})
@@ -94,6 +93,49 @@ def excel_to_eval_json(paths, output, auto_translation_json=None):
                         json_auto["data"].append(
                             {"id": f'{context_id}&{i}', "title": "", "context": context_auto, "question": question_auto,
                              "answers": answers_auto})
+
+    if impossible_questions_path is not None:
+        print(impossible_questions_path)
+        wookbook = openpyxl.load_workbook(impossible_questions_path)
+        worksheet = wookbook.active
+        index = 0
+        while index < worksheet.max_row:
+            index += 1
+            left = worksheet.cell(index, 1).value.strip()
+            right = worksheet.cell(index, 2).value.strip()
+            if "_" in left and "_" in left and left == right:
+                id_split = left.split("_")
+                if len(id_split) < 3:
+                    continue
+                document_id = int(id_split[0])
+                paragraph_id = int(id_split[1])
+                question_id = int(id_split[2])
+
+                if auto_translation_json:
+                    context_auto = auto_translation_json[document_id]["paragraphs"][paragraph_id]["context"]
+                    question_auto = auto_translation_json[document_id]["paragraphs"][paragraph_id]["qas"][
+                        question_id]["question"]
+
+                index += 1
+                context_eng = worksheet.cell(index, 1).value.strip()
+                context_slo = worksheet.cell(index, 2).value.strip()
+
+                index += 1
+                question_eng = worksheet.cell(index, 1).value.strip()
+                question_slo = worksheet.cell(index, 2).value.strip()
+
+                answers = {"text": [], "answer_start": []}
+                json_eng["data"].append(
+                    {"id": left, "title": "", "context": context_eng, "question": question_eng,
+                     "answers": answers})
+                json_slo["data"].append(
+                    {"id": left, "title": "", "context": context_slo, "question": question_slo,
+                     "answers": answers})
+                if auto_translation_json is not None:
+                    json_auto["data"].append(
+                        {"id": left, "title": "", "context": context_auto, "question": question_auto,
+                         "answers": answers})
+
 
     with open(output + "_eng.json", "w", encoding="utf8") as f:
         f.write(json.dumps(json_eng, ensure_ascii=False))
@@ -106,4 +148,5 @@ def excel_to_eval_json(paths, output, auto_translation_json=None):
             f.write(json.dumps(json_auto, ensure_ascii=False))
 
 
-excel_to_eval_json("../data/translations", "../data/translations/test", "output/dev-v2.0_translated_corrected.json")
+excel_to_eval_json("../data/translations", "../data/translations/test_v2", "output/dev-v2.0_translated_corrected.json",
+                   "../data/translations/impossible_post-edited.xlsx")

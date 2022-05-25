@@ -28,5 +28,12 @@ def reformat_data(data_path, outputh_path):
     return trainer_data
 
 
-reformat_data('../data_processing/output/dev-v2.0_translated_corrected.json',"../data_processing/output/rf_dev-v2.0_SLO_translated_corrected.json")
-reformat_data( '../data_processing/output//train-v2.0_translated_corrected.json',"../data_processing/output/rf_train-v2.0_SLO_translated_corrected.json")
+if __name__ == '__main__':
+    reformat_data('../data/dev-v2.0.json',
+                  "../data_processing/output/rf_dev-v2.0_ENG.json")
+    reformat_data( '../data/train-v2.0.json',
+                  "../data_processing/output/rf_train-v2.0_ENG.json")
+    # reformat_data('../data_processing/output/dev-v2.0_normalized.json',
+    #               "../data_processing/output/rf_dev-v2.0_ENG_normalized.json")
+    # reformat_data( '../data_processing/output/train-v2.0_normalized.json',
+    #               "../data_processing/output/rf_train-v2.0_ENG_normalized.json")
