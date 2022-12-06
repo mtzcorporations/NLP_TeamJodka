@@ -4,10 +4,11 @@ import copy
 import os
 import re
 from pathlib import Path
+import argparse
 
 ANSWER_TAG = "b"
 
-def json_to_html(input_english_json, input_translated_html, output_path):
+def build_json_with_context(input_english_json, input_translated_html, output_path):
     with open(input_english_json, encoding="utf8") as f:
         json_english = json.load(f)
 
@@ -93,14 +94,24 @@ def json_to_html(input_english_json, input_translated_html, output_path):
                                       "context"] + "\n\n")
     log.close()
     print(f"Found fraction: {(found / total):.2f}")
-    output_file_name = Path(input_english_json).stem
-    with open(os.path.join(output_path, output_file_name + "_translated.json"), "w", encoding="utf8") as f:
+    # output_file_name = Path(input_english_json).stem
+    if not output_path.endswith(".json"):
+        output_path += ".json"
+    with open(output_path, "w", encoding="utf8") as f:
         f.write(json.dumps(json_output, ensure_ascii=False))
 
 
 if __name__ == '__main__':
-    json_to_html("../data/train-v2.0.json", "input/train_translated", "output")
+    # build_json_with_context("../data/train-v2.0.json", "input/train_translated", "output")
     # json_to_html("../data/dev-v2.0.json", ["input/dev-v2.0_0_SL.html", "input/dev-v2.0_1_SL.html",
     #                                        "input/dev-v2.0_2_SL.html"], "output")
     # json_to_html("../data/train-v2.0.json", ["input/train-v2.0_0_SL.html", "input/train-v2.0_1_SL.html",
     #                                          "input/train-v2.0_2_SL.html", "input/train-v2.0_3_SL.html"], "output")
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-ie", "--input_english", help="Input english (JSON).", required=True)
+    parser.add_argument("-it", "--input_translated", help="Directory with translated html files.", required=True)
+    parser.add_argument("-o", "--output", help="Output file.", required=True)
+    args = parser.parse_args()
+    print(args)
+    build_json_with_context(args.input_english, args.input_translated, args.output)

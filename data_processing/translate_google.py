@@ -154,6 +154,18 @@ def translate_with_google(input_folder, base_name, cloud_folder="train", cloud_f
         else:
             print("Already formatted.")
 
+def correct_files(input_folder, base_name):
+    file_list = [f for f in os.listdir(input_folder) if re.search(r'^' + base_name + '_\d+.html$', f)]
+    file_list = sorted(file_list, key=lambda s: int(re.findall(r'\d+', s)[2]))
+    for i, file in enumerate(file_list):
+        print(f"Current file ({i}/{len(file_list)}): {file}")
+        local_file = f"input/train_translated/google_unformatted/{Path(file).stem}_SL.html"
+        formatted_file = f"input/train_translated/google/{Path(file).stem}_SL.html"
+        if not os.path.isfile(formatted_file):
+            correct_formatting(local_file, formatted_file)
+        else:
+            print("Already formatted.")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -164,8 +176,13 @@ if __name__ == '__main__':
     parser.add_argument("-b", "--bucket_name", help="Cloud bucket name.", required=True)
     parser.add_argument("-check", "--check_files", default=True, type=bool,
                         help="Whether to upload files if they don't exist on cloud before translating.")
+    parser.add_argument("--correct_only", default=False, type=bool,
+                        help="Whether to only correct existing files.")
     args = parser.parse_args()
     print(args)
-    translate_with_google(args.input, args.filename, args.cloud_folder, args.cloud_folder_output,
-                          args.bucket_name, args.check_files)
-    #     translate_with_google("output/train_html", "train-v2.0", check_files=False)
+    if not args.correct_only:
+        translate_with_google(args.input, args.filename, args.cloud_folder, args.cloud_folder_output,
+                              args.bucket_name, args.check_files)
+    else:
+        correct_files(args.input, args.filename)
+    # translate_with_google("output/train_html", "train-v2.0", check_files=False)
