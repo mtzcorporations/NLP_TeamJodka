@@ -74,10 +74,10 @@ def download_blob(source_blob_name, destination_file_name, bucket=None, bucket_n
 
 def batch_translate_text(
         file_name,
-        input_folder_path="train",
-        output_folder_path="results/train",
-        project_id="nlp-journal",
-        storage_id="train-nlp-journal",
+        input_folder_path,
+        output_folder_path,
+        project_id,
+        storage_id,
         timeout=3600,
         client=None
 ):
@@ -119,7 +119,7 @@ def batch_translate_text(
 
 
 def translate_with_google(input_folder, base_name, cloud_folder="train", cloud_folder_output="results/train",
-                          bucket_name="train-nlp-journal", check_files=True):
+                          bucket_name="train-nlp-journal", project_id="nlp-journal", check_files=True):
     storage_client, bucket = init_bucket(bucket_name)
     client = translate.TranslationServiceClient()
     file_list = [f for f in os.listdir(input_folder) if re.search(r'^' + base_name + '_\d+.html$', f)]
@@ -136,7 +136,7 @@ def translate_with_google(input_folder, base_name, cloud_folder="train", cloud_f
 
         if not storage.Blob(bucket=bucket, name=f"{cloud_folder_output}/{file}/index.csv").exists(storage_client):
             batch_translate_text(file_name=file, input_folder_path=cloud_folder, output_folder_path=cloud_folder_output,
-                                 client=client)
+                                 client=client, project_id=project_id, storage_id=bucket_name)
         else:
             print("Already translated.")
 
@@ -174,6 +174,7 @@ if __name__ == '__main__':
     parser.add_argument("-cf", "--cloud_folder", help="Input folder on cloud.", required=True)
     parser.add_argument("-co", "--cloud_folder_output", help="Output folder on cloud.", required=True)
     parser.add_argument("-b", "--bucket_name", help="Cloud bucket name.", required=True)
+    parser.add_argument("-p", "--project_id", help="Project name.", required=True)
     parser.add_argument("-check", "--check_files", default=True, type=bool,
                         help="Whether to upload files if they don't exist on cloud before translating.")
     parser.add_argument("--correct_only", default=False, type=bool,
@@ -182,7 +183,7 @@ if __name__ == '__main__':
     print(args)
     if not args.correct_only:
         translate_with_google(args.input, args.filename, args.cloud_folder, args.cloud_folder_output,
-                              args.bucket_name, args.check_files)
+                              args.bucket_name, args.project_id, args.check_files)
     else:
         correct_files(args.input, args.filename)
     # translate_with_google("output/train_html", "train-v2.0", check_files=False)
