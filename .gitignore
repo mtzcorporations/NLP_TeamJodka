@@ -168,3 +168,4 @@ model_testing/eval
 /data_processing/excel_za_meto.xlsx
 /data_processing/results/
 /data_processing/count_data.py
+key.json
