@@ -82,7 +82,7 @@ def batch_translate_text(
         client=None
 ):
     input_uri = f"gs://{storage_id}/{input_folder_path}/{file_name}"  # train-v2.0_0.html
-    output_uri = f"gs://{storage_id}/{output_folder_path}/{file_name}"
+    output_uri = f"gs://{storage_id}/{output_folder_path}/{file_name}/"
 
     """Translates a batch of texts on GCS and stores the result in a GCS location."""
     if client is None:
