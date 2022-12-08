@@ -3,12 +3,9 @@ import json
 import copy
 import os
 import re
-from pathlib import Path
 import argparse
 
-ANSWER_TAG = "b"
-
-def build_json_with_context(input_english_json, input_translated_html, output_path):
+def build_json_with_context(input_english_json, input_translated_html, output_path, answer_tag="b"):
     with open(input_english_json, encoding="utf8") as f:
         json_english = json.load(f)
 
@@ -60,14 +57,14 @@ def build_json_with_context(input_english_json, input_translated_html, output_pa
                 else:
                     answer_type = "plausible_answer"
 
-                index = line.find(f"<{ANSWER_TAG} class='answer'>")
+                index = line.find(f"<{answer_tag} class='answer'>")
                 json_output["data"][indexes["data"]]["paragraphs"][indexes["paragraph"]]["qas"][indexes["qas"]][
                     answer_type + "s"][indexes[answer_type]]["answer_start"] = index
 
                 json_output["data"][indexes["data"]]["paragraphs"][indexes["paragraph"]]["qas"][indexes["qas"]][
                     answer_type + "s"][indexes[answer_type]]["text_in_context"] = line
 
-                line = (line.split(f"<{ANSWER_TAG} class='answer'>")[1].split(f"</{ANSWER_TAG}>"))[0]
+                line = (line.split(f"<{answer_tag} class='answer'>")[1].split(f"</{answer_tag}>"))[0]
                 json_output["data"][indexes["data"]]["paragraphs"][indexes["paragraph"]]["qas"][indexes["qas"]][
                     answer_type + "s"][indexes[answer_type]]["text"] = line
                 continue
@@ -112,6 +109,7 @@ if __name__ == '__main__':
     parser.add_argument("-ie", "--input_english", help="Input english (JSON).", required=True)
     parser.add_argument("-it", "--input_translated", help="Directory with translated html files.", required=True)
     parser.add_argument("-o", "--output", help="Output file.", required=True)
+    parser.add_argument("-t", "--tag", help="HTML tag denoting the answer.", default="b")
     args = parser.parse_args()
     print(args)
-    build_json_with_context(args.input_english, args.input_translated, args.output)
+    build_json_with_context(args.input_english, args.input_translated, args.output, args.tag)
