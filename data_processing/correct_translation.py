@@ -4,6 +4,7 @@ import numpy as np
 import os
 from pathlib import Path
 from tqdm import tqdm
+import argparse
 
 def create_lemma_array(text, nlp):
     answer_processed = nlp(text)
@@ -90,4 +91,12 @@ def correct_translation(input_translated, input_english, output_path, document_l
 
 if __name__ == '__main__':
     # correct_translation("output/train-v2.0_translated.json", "../data/train-v2.0.json", "output")
-    correct_translation("output/dev-v2.0_translated_old.json", "../data/dev-v2.0.json", "output")
+    # correct_translation("output/dev-v2.0_translated_old.json", "../data/dev-v2.0.json", "output")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input", help="Input file.", required=True)
+    parser.add_argument("-io", "--input_original", help="Original file.", required=True)
+    parser.add_argument("-o", "--output", help="Output folder.", required=True)
+    args = parser.parse_args()
+    print(args)
+
+    correct_translation(args.input, args.input_original, args.output)
